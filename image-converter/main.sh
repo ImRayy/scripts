@@ -4,10 +4,6 @@ function welcome_msg() {
     gum style --margin "1 0" --padding "1 2" --border double --border-foreground 212 "$(gum style --foreground 212 'Image Converter')"
 }
 
-function loading() {
-    gum spin --spinner dot --title "Converting..." --
-}
-
 function convert() {
     FUNC=$(gum choose {"1. Convert to WEBP","2. Convert from WEBP"} | cut -d '.' -f 1)
 
