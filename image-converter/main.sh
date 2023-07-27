@@ -5,6 +5,7 @@ function welcome_msg() {
 }
 
 function convert() {
+    local extensions=("png" "jpg" "jpeg")
     FUNC=$(gum choose {"1. Convert to WEBP","2. Convert from WEBP"} | cut -d '.' -f 1)
 
     case "$FUNC" in
@@ -15,34 +16,53 @@ function convert() {
             tree /home/$USER/
         }
 
-        local total_files=$(find $1/ -type f | wc -l)
+        local total_files=$(find $1/ -maxdepth 1 -type f \( -name "*.png" -o -name "*.jpg" -o -name "*.jpeg" \) | wc -l)
         local current_file=1
-        for file in $1/*; do
 
-            local filename=$(awk -F '/' '{print $NF}' <<<$file | cut -d '.' -f 1)
-            echo "$(tput cuu1 & tput el & gum style --foreground 212 ${current_file}) of $(gum style --foreground 212 ${total_files})"
+        shopt -s nullglob
+        for ext in "${extensions[@]}"; do
+            for file in $1/*."$ext"; do
+                local filename=$(awk -F '/' '{print $NF}' <<<$file | cut -d '.' -f 1)
+                echo "$(
+                    tput cuu1 &
+                    tput el &
+                    gum style --foreground 212 ${current_file}
+                ) of $(gum style --foreground 212 ${total_files})"
 
-            if [[ $quality != "" ]] && [[ $quality != "lossless" ]]; then
-                gum spin --spinner dot --title "Converting..." -- \
-                    cwebp $file -o $1/"${filename}.webp" -q $quality
-            elif [[ $quality == "lossless" ]]; then
-                gum spin --spinner dot --title "Converting..." -- \
-                    cwebp $file -o $1/${filename}.webp -lossless
-            else
-                exit
-            fi
-            ((current_file = current_file + 1))
+                if [[ $quality != "" ]] && [[ $quality != "lossless" ]]; then
+                    gum spin --spinner dot --title "Converting..." -- \
+                        cwebp $file -o $1/"${filename}.webp" -q $quality
+                elif [[ $quality == "lossless" ]]; then
+                    gum spin --spinner dot --title "Converting..." -- \
+                        cwebp $file -o $1/${filename}.webp -lossless
+                else
+                    exit
+                fi
+                ((current_file = current_file + 1))
+            done
         done
         echo ""
         gum style --foreground 40 "Successful!"
         echo ""
         ;;
     2)
-        for file in $1/*; do
+        local total_files=$(find $1/ -maxdepth 1 -type f \( -name "*.webp" \) | wc -l)
+        local current_file=1
+        echo ""
+        for file in $1/*.webp; do
             local filename=$(awk -F '/' '{print $NF}' <<<$file | cut -d '.' -f 1)
+            echo "$(
+                tput cuu1 &
+                tput el &
+                gum style --foreground 212 ${current_file}
+            ) of $(gum style --foreground 212 ${total_files})"
             gum spin --spinner dot --title "Converting..." -- \
                 dwebp $file -o $1/"${filename}.png"
+            ((current_file = current_file + 1))
         done
+        echo ""
+        gum style --foreground 40 "Successful!"
+        echo ""
         ;;
     *)
         echo "None selected"
@@ -54,8 +74,13 @@ function main() {
     if [[ -z "$1" ]]; then
         echo -e "> bash main.sh $(gum style --foreground 212 "_files_path_")"
     else
-        welcome_msg
-        convert $1
+        local files_exists=$(find $1/ -maxdepth 1 -type f \( -name "*.png" -o -name "*.jpg" -o -name "*.jpeg" -o -name "*.webp" \) | wc -l)
+        if [[ $files_exists -ne 0 ]]; then
+            welcome_msg
+            convert $1
+        else
+            echo "No image files found"
+        fi
     fi
 }
 
