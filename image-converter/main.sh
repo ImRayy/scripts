@@ -12,9 +12,6 @@ function convert() {
     1)
         echo "Lossless not recommended for non PNG files"
         local quality=$(gum choose {0,75,100,lossless})
-        function hello() {
-            tree /home/$USER/
-        }
 
         local total_files=$(find $1/ -maxdepth 1 -type f \( -name "*.png" -o -name "*.jpg" -o -name "*.jpeg" \) | wc -l)
         local current_file=1
