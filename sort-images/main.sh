@@ -19,7 +19,9 @@ function progress_bar() {
         echo -ne "[${BLUE}==============            ${NC}] 60%\r"
     elif [[ $percentage -ge 60 && $percentage -lt 80 ]]; then
         echo -ne "[${CYAN}=======================   ${NC}] 80%\r"
-    elif [[ $percentage -ge 80 && $percentage -le 100 ]]; then
+    elif [[ $percentage -ge 80 && $percentage -lt 90 ]]; then
+        echo -ne "[${CYAN}========================  ${NC}] 90%\r"
+    elif [[ $percentage -eq 100 ]]; then
         echo -ne "[${GREEN}==========================${NC}] 100%\r"
     fi
 }
