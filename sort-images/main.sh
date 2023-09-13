@@ -9,7 +9,9 @@ NC="\033[0m"
 
 function progress_bar() {
     percentage=$1
-    if [[ $percentage -ge 0 && $percentage -lt 20 ]]; then
+    if [[ $percentage -ge 0 && $percentage -lt 10 ]]; then  
+        echo -ne "[                      ] 0%\r"
+    elif [[ $percentage -ge 10 && $percentage -lt 20 ]]; then
         echo -ne "[${YELLOW}====                       ${NC}] 20%\r"
     elif [[ $percentage -ge 20 && $percentage -lt 40 ]]; then
         echo -ne "[${YELLOW}=======                   ${NC}] 40%\r"
@@ -22,22 +24,20 @@ function progress_bar() {
     fi
 }
 
-# percentage=$(( (280 * 100) / 321 ))
 function sort() {
     total_files=$(find $1 -maxdepth 1 -type f | wc -l)
     current_file=0
     mkdir $1/{Desktop,Mobile}
     for image in $1/*; do
         if [[ -f $image ]]; then
-            image_threshold=$(identify -format "%[fx:w/h]\n" $image)
+            image_threshold=$(identify -format "%[fx:w/h]\n" "$image")
             if awk -v image_threshold="$image_threshold" -v desktop="$DESKTOP_THRESHOLD" \
                 'BEGIN { if ( image_threshold >= desktop ) exit 0; else exit 1 }'; then
-                mv $image $1/Desktop
+                mv "$image" $1/Desktop
             else
-                mv $image $1/Mobile
+                mv "$image" $1/Mobile
             fi
             ((current_file = current_file + 1))
-
         fi
         current_progress=$(( ($current_file * 100 ) / $total_files ))
         progress_bar $current_progress
