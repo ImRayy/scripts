@@ -12,17 +12,17 @@ function progress_bar() {
     if [[ $percentage -ge 0 && $percentage -lt 10 ]]; then  
         echo -ne "[                      ] 0%\r"
     elif [[ $percentage -ge 10 && $percentage -lt 20 ]]; then
-        echo -ne "[${YELLOW}====                       ${NC}] 20%\r"
+        echo -ne "[${YELLOW}====                       ${NC}] $1%\r"
     elif [[ $percentage -ge 20 && $percentage -lt 40 ]]; then
-        echo -ne "[${YELLOW}=======                   ${NC}] 40%\r"
+        echo -ne "[${YELLOW}=======                   ${NC}] $1%\r"
     elif [[ $percentage -ge 40 && $percentage -lt 60 ]]; then
-        echo -ne "[${BLUE}==============            ${NC}] 60%\r"
+        echo -ne "[${BLUE}==============            ${NC}] $1%\r"
     elif [[ $percentage -ge 60 && $percentage -lt 80 ]]; then
-        echo -ne "[${CYAN}=======================   ${NC}] 80%\r"
+        echo -ne "[${CYAN}=======================   ${NC}] $1%\r"
     elif [[ $percentage -ge 80 && $percentage -lt 90 ]]; then
-        echo -ne "[${CYAN}========================  ${NC}] 90%\r"
+        echo -ne "[${CYAN}========================  ${NC}] $1%\r"
     elif [[ $percentage -eq 100 ]]; then
-        echo -ne "[${GREEN}==========================${NC}] 100%\r"
+        echo -ne "[${GREEN}==========================${NC}] $1%\r"
     fi
 }
 
