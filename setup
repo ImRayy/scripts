@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+file="$HOME/.scripts-aliases"
+
+if [[ -f "$file" ]]; then
+    rm "$file"
+fi
+
+find -- * -maxdepth 1 -type d | while read -r d; do
+    echo alias "$d"="'$PWD/$d/main.sh'" >>"$HOME/.scripts-aliases"
+done
+
+printf "Copy and paste any following line to you bash, zsh or fish config file\n\n"
+echo "souce $HOME/.scripts-aliases"
+echo "source ~/.scripts-aliases"
